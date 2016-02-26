@@ -18,10 +18,10 @@
 #define SND_SFOIL_PIN			9 
 
 //Remote Pins
-#define REMOTE_A_PIN          A3	// next 4 pins are for the remote input
-#define REMOTE_B_PIN          A2	// they are reversed on the receiver board (as normal)
-#define REMOTE_C_PIN          A1
-#define REMOTE_D_PIN          A0
+#define REMOTE_A_PIN          A0	// next 4 pins are for the remote input
+#define REMOTE_B_PIN          A1	// they are reversed on the receiver board (as normal)
+#define REMOTE_C_PIN          A2
+#define REMOTE_D_PIN          A3
 
 
 /***********************************************************
@@ -59,9 +59,19 @@ void setup(){
 	
 	//Output Pins - Sound
 	pinMode (SND_ENG_PIN, OUTPUT);
+	digitalWrite(SND_ENG_PIN, HIGH);
+	
 	pinMode (SND_LASER_PIN, OUTPUT);
+	digitalWrite (SND_LASER_PIN, HIGH);
+	
 	pinMode (SND_TPDO_PIN, OUTPUT);
+	digitalWrite (SND_TPDO_PIN, HIGH);
+	
 	pinMode (SND_SFOIL_PIN, OUTPUT);
+	digitalWrite (SND_SFOIL_PIN, HIGH);
+	
+	pinMode (13, OUTPUT);
+	digitalWrite(13, HIGH);
 	
 	
 	
@@ -73,10 +83,10 @@ void setup(){
 ***********************************************************/
 void loop(){
  readRemoteButtonStates() ;
-  
   if (remoteBtnA_state){            // If A button is being pressed
     Serial.println("Remote Button A Detected");
 		enginesToggle();                    // Turn on engine sound and lights
+		delay(1000);
   }
 
   if (remoteBtnB_state){            // If B button is being pressed
@@ -108,18 +118,93 @@ void readRemoteButtonStates(){
 }
 
 /***********************************************************
-*                 readRemoteButtonStates                   *
+*                 engineToggle   		                   *
 ***********************************************************/
 void enginesToggle(){
+	Serial.println("engineToggle");
 	if (!engineState){
 		digitalWrite(ENG_PIN, HIGH);
 		digitalWrite(SND_ENG_PIN, LOW);
+		delay(50);
+		engineState = 1;
+		return;
 	}
-	else {
-		digitalWrite(ENG_PIN, LOW);	
-		digitalWrite(SND_ENG_PIN, HIGH)
+	if (engineState){
+		digitalWrite(ENG_PIN, LOW);
+		digitalWrite(SND_ENG_PIN, HIGH);
+		delay(50);
+		engineState = 0;
+		return;
 	}
 	
 	
 	
 }
+
+/***********************************************************
+*                 laserFire   	  		                   *
+***********************************************************/
+void laserFire(){
+	Serial.println("laserFire");
+		delay(5);
+		digitalWrite(LASER1_PIN, HIGH);
+		digitalWrite(SND_LASER_PIN, LOW);
+		delay(100);
+		digitalWrite(SND_LASER_PIN, HIGH);
+		delay(300);
+		digitalWrite(LASER1_PIN, LOW);
+		//
+		digitalWrite(LASER2_PIN, HIGH);
+		digitalWrite(SND_LASER_PIN, LOW);
+		delay(100);
+		digitalWrite(SND_LASER_PIN, HIGH);
+		delay(300);
+		digitalWrite(LASER2_PIN, LOW);
+		//
+		digitalWrite(LASER3_PIN, HIGH);
+		digitalWrite(SND_LASER_PIN, LOW);
+		delay(100);
+		digitalWrite(SND_LASER_PIN, HIGH);
+		delay(300);
+		digitalWrite(LASER3_PIN, LOW);
+		//
+		digitalWrite(LASER4_PIN, HIGH);
+		digitalWrite(SND_LASER_PIN, LOW);
+		delay(100);
+		digitalWrite(SND_LASER_PIN, HIGH);
+		delay(300);
+		digitalWrite(LASER4_PIN, LOW);
+		
+	}
+	
+/***********************************************************
+*                torpedo  	  		                   *
+***********************************************************/
+void torpedoFire(){
+	Serial.println("torpedo fire");
+		delay(5);
+		digitalWrite(TPDO_WHT_PIN, HIGH);
+		digitalWrite(SND_TPDO_PIN, LOW);
+		delay(50);
+		digitalWrite(TPDO_WHT_PIN, LOW);
+		delay(50);
+		digitalWrite(SND_TPDO_PIN, HIGH);
+		digitalWrite(TPDO_RED_PIN, HIGH);
+		delay(500);
+		digitalWrite(TPDO_RED_PIN, LOW);
+		delay(2000);
+	}
+/***********************************************************
+*                Sfoil  	  		                   *
+***********************************************************/
+void sfoilActuate(){
+	Serial.println("sfoil");
+		delay(5);
+
+		digitalWrite(SND_SFOIL_PIN, LOW);
+		delay(100);
+		digitalWrite(SND_SFOIL_PIN, HIGH);
+
+	}
+	
+	
